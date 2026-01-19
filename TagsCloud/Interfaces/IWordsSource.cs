@@ -8,6 +8,6 @@ namespace TagsCloud.Interfaces
 {
     public interface IWordsSource
     {
-        IEnumerable<string> ReadWords();
+        Result<List<string>> ReadWords();
     }
 }

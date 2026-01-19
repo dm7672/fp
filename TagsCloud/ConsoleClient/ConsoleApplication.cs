@@ -21,11 +21,15 @@ public sealed class ConsoleApplication
         using (container)
         {
             var generator = container.Resolve<ITagCloudGenerator>();
-            generator.Generate(
+            var result = generator.Generate(
                 options.Output,
                 options.Width,
                 options.Height,
                 options.Font);
+            if (result.IsFailure)
+            {
+                Console.WriteLine(result.Error);
+            }
         }
 
         return 0;

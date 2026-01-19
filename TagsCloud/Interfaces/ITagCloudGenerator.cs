@@ -8,6 +8,6 @@ namespace TagsCloud.Interfaces
 {
     public interface ITagCloudGenerator
     {
-        void Generate(string outputPath, int imageWidth, int imageHeight, string fontName);
+        Result<None> Generate(string outputPath, int imageWidth, int imageHeight, string fontName);
     }
 }

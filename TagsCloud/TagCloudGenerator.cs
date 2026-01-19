@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using TagsCloud;
 using TagsCloud.Interfaces;
 
 public class TagCloudGenerator : ITagCloudGenerator
@@ -29,14 +30,16 @@ public class TagCloudGenerator : ITagCloudGenerator
         this.renderer = renderer;
     }
 
-    public void Generate(string outputPath, int imageWidth, int imageHeight, string fontName)
+    public Result<None> Generate(string outputPath, int imageWidth, int imageHeight, string fontName)
     {
+
         var rawWords = wordsSource.ReadWords();
         var words = preprocessor.Preprocess(rawWords);
         var freqs = freqAnalyzer.CountFrequencies(words);
+        if (freqs.IsFailure) { return Result<None>.Failure(freqs.Error); }
 
-        var minFreq = freqs.Values.Min();
-        var maxFreq = freqs.Values.Max();
+        var minFreq = freqs.Value.Values.Min();
+        var maxFreq = freqs.Value.Values.Max();
 
         var layouter = layouterFactory();
 
@@ -45,7 +48,7 @@ public class TagCloudGenerator : ITagCloudGenerator
 
         var wordRects = new List<(string Word, Rectangle Rect, float FontSize)>();
         var rnd = new Random(0);
-        foreach (var kv in freqs.OrderByDescending(p => p.Value))
+        foreach (var kv in freqs.Value.OrderByDescending(p => p.Value))
         {
             var word = kv.Key;
             var freq = kv.Value;
@@ -58,5 +61,9 @@ public class TagCloudGenerator : ITagCloudGenerator
         }
 
         renderer.Render(outputPath, wordRects, imageWidth, imageHeight, fontName);
+
+        return Result<None>.Success(null);
     }
+
+
 }

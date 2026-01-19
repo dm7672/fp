@@ -8,6 +8,6 @@ namespace TagsCloud.Interfaces
 {
     public interface IFrequencyAnalyzer
     {
-        IDictionary<string, int> CountFrequencies(IEnumerable<string> words);
+        Result<IDictionary<string, int>> CountFrequencies(Result<List<string>> words);
     }
 }

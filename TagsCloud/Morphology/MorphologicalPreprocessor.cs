@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TagsCloud;
 using TagsCloud.Interfaces;
 
 public sealed class MorphologicalPreprocessor : IWordsPreprocessor
@@ -15,9 +16,18 @@ public sealed class MorphologicalPreprocessor : IWordsPreprocessor
         this.stopWordsProvider = stopWordsProvider;
     }
 
-    public IEnumerable<string> Preprocess(IEnumerable<string> words)
+    public Result<List<string>> Preprocess(Result<List<string>> words)
     {
-        foreach (var w in words)
+        if (words.IsFailure)
+        {
+            return words;
+        }
+        if(words.Value.Count == 0)
+        {
+            return Result<List<string>>.Failure("Не обнаружено слов в изначальном файле");
+        }
+        var lemmas = new List<string>();
+        foreach (var w in words.Value)
         {
             if (string.IsNullOrWhiteSpace(w)) continue;
 
@@ -27,7 +37,8 @@ public sealed class MorphologicalPreprocessor : IWordsPreprocessor
                 continue;
 
             if (posFilter.IsAllowed(analyzed.PartOfSpeech))
-                yield return analyzed.Lemma;
+                lemmas.Add(analyzed.Lemma);
         }
+        return Result<List<string>>.Success(lemmas);
     }
 }

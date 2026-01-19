@@ -17,24 +17,17 @@ namespace TagsCloud.Morphology
         public Word Analyze(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
-                return new Word(token ?? string.Empty, token ?? string.Empty, PartOfSpeech.Other);
+                return new Word(token ?? string.Empty, token ?? string.Empty, PartOfSpeech.Other); 
 
-            try
-            {
-                var analyses = new Analyses(token);
-                if (analyses == null || analyses.Count == 0)
-                    return new Word(token, token.ToLowerInvariant(), PartOfSpeech.Other);
-
-                var lemma = analyses[0];
-                var lemmaText = string.IsNullOrEmpty(lemma.Text) ? token : lemma.Text;
-                var pos = DetectPartOfSpeechFromLemma(lemma);
-
-                return new Word(token, lemmaText.ToLowerInvariant(), pos);
-            }
-            catch (Exception ex)
-            {
+            var analyses = new Analyses(token);
+            if (analyses == null || analyses.Count == 0)
                 return new Word(token, token.ToLowerInvariant(), PartOfSpeech.Other);
-            }
+
+            var lemma = analyses[0];
+            var lemmaText = string.IsNullOrEmpty(lemma.Text) ? token : lemma.Text;
+            var pos = DetectPartOfSpeechFromLemma(lemma);
+
+            return new Word(token, lemmaText.ToLowerInvariant(), pos);
         }
 
         private static PartOfSpeech DetectPartOfSpeechFromLemma(Lemma lemma)

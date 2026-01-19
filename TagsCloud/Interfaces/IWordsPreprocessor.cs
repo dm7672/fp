@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TagsCloud;
 namespace TagsCloud.Interfaces
 {
     public interface IWordsPreprocessor
     {
-        IEnumerable<string> Preprocess(IEnumerable<string> words);
+        Result<List<string>> Preprocess(Result<List<string>> words);
     }
 }
